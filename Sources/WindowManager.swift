@@ -21,6 +21,21 @@ class WindowManager {
 
         if targetApp == nil {
             guard let appURL = findApplicationURL(named: appName) else {
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+                process.arguments = ["-a", appName]
+
+                do {
+                    try process.run()
+                    process.waitUntilExit()
+
+                    if process.terminationStatus == 0 {
+                        Thread.sleep(forTimeInterval: 0.5)
+                        return true
+                    }
+                } catch {
+                }
+
                 print("Could not find application: \(appName)")
                 return false
             }
@@ -59,6 +74,41 @@ class WindowManager {
         }
 
         app.activate(options: [.activateIgnoringOtherApps])
+
+        Thread.sleep(forTimeInterval: 0.15)
+
+        if NSWorkspace.shared.frontmostApplication?.bundleIdentifier != app.bundleIdentifier {
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+            process.arguments = ["-a", appName]
+
+            do {
+                try process.run()
+                process.waitUntilExit()
+                Thread.sleep(forTimeInterval: 0.15)
+            } catch {
+            }
+
+            if NSWorkspace.shared.frontmostApplication?.bundleIdentifier != app.bundleIdentifier {
+                let script = """
+                tell application "\(appName)"
+                    activate
+                end tell
+                """
+
+                let appleScript = Process()
+                appleScript.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
+                appleScript.arguments = ["-e", script]
+
+                do {
+                    try appleScript.run()
+                    appleScript.waitUntilExit()
+                    Thread.sleep(forTimeInterval: 0.2)
+                } catch {
+                }
+            }
+        }
+
         return true
     }
 
