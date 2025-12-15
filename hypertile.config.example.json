@@ -1,0 +1,37 @@
+{
+  "left": "a",
+  "right": "s",
+  "defaultCenteredWidth": 75,
+  "apps": [
+    {
+      "appName": "iTerm",
+      "bind": "t",
+      "centeredWidth": null,
+      "mousePosition": null
+    },
+    {
+      "appName": "Google Chrome",
+      "bind": "c",
+      "centeredWidth": null,
+      "mousePosition": {
+        "x": 50,
+        "y": 50
+      }
+    },
+    {
+      "appName": "Visual Studio Code",
+      "bind": "v",
+      "centeredWidth": 80,
+      "mousePosition": null
+    },
+    {
+      "appName": "Slack",
+      "bind": "k",
+      "centeredWidth": null,
+      "mousePosition": {
+        "x": 10,
+        "y": 10
+      }
+    }
+  ]
+}
