@@ -199,18 +199,18 @@ class WindowManager {
         switch position {
         case .left:
             newFrame = CGRect(
-                x: screenFrame.origin.x + border,
-                y: screenFrame.origin.y + menuBarHeight + border / 2,
-                width: (screenFrame.width / 2) - (border * 1.5),
-                height: screenFrame.height - border
+                x: screenFrame.origin.x,
+                y: screenFrame.origin.y + menuBarHeight,
+                width: screenFrame.width / 2,
+                height: screenFrame.height
             )
 
         case .right:
             newFrame = CGRect(
-                x: screenFrame.origin.x + (screenFrame.width / 2) + (border),
-                y: screenFrame.origin.y + menuBarHeight + border / 2, 
-                width: (screenFrame.width / 2) - (border * 1.5),
-                height: screenFrame.height - border
+                x: screenFrame.origin.x + screenFrame.width / 2,
+                y: screenFrame.origin.y + menuBarHeight,
+                width: screenFrame.width / 2,
+                height: screenFrame.height
             )
 
         case .centered:
@@ -220,7 +220,7 @@ class WindowManager {
 
             newFrame = CGRect(
                 x: screenFrame.origin.x + leftGap,
-                y: screenFrame.origin.y + menuBarHeight ,
+                y: screenFrame.origin.y + menuBarHeight,
                 width: windowWidth,
                 height: screenFrame.height
             )
