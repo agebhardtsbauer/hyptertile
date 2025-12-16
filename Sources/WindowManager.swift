@@ -7,7 +7,7 @@ class WindowManager {
     private let appState: AppState
     private let config: Config
 
-    private let border: CGFloat = 10
+    private let border: CGFloat = 6
     private let menuBarHeight: CGFloat = 25
 
     init(appState: AppState, config: Config) {
@@ -20,48 +20,50 @@ class WindowManager {
         var targetApp = runningApps.first { $0.localizedName == appName }
 
         if targetApp == nil {
-            guard let appURL = findApplicationURL(named: appName) else {
-                let process = Process()
-                process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
-                process.arguments = ["-a", appName]
-
-                do {
-                    try process.run()
-                    process.waitUntilExit()
-
-                    if process.terminationStatus == 0 {
-                        Thread.sleep(forTimeInterval: 0.5)
-                        return true
-                    }
-                } catch {
-                }
-
-                print("Could not find application: \(appName)")
-                return false
-            }
-
-            let configuration = NSWorkspace.OpenConfiguration()
-            var launchSuccess = false
-            let semaphore = DispatchSemaphore(value: 0)
-
-            NSWorkspace.shared.openApplication(at: appURL, configuration: configuration) { app, error in
-                if let error = error {
-                    print("Failed to launch application: \(appName) - \(error.localizedDescription)")
-                    launchSuccess = false
-                } else {
-                    launchSuccess = true
-                }
-                semaphore.signal()
-            }
-
-            semaphore.wait()
-
-            if !launchSuccess {
-                return false
-            }
-
-            Thread.sleep(forTimeInterval: 0.5)
-            targetApp = NSWorkspace.shared.runningApplications.first { $0.localizedName == appName }
+            print("Application \(appName) is not running.")
+            return false
+            // guard let appURL = findApplicationURL(named: appName) else {
+            //     let process = Process()
+            //     process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+            //     process.arguments = ["-a", appName]
+            //
+            //     do {
+            //         try process.run()
+            //         process.waitUntilExit()
+            //
+            //         if process.terminationStatus == 0 {
+            //             Thread.sleep(forTimeInterval: 0.5)
+            //             return true
+            //         }
+            //     } catch {
+            //     }
+            //
+            //     print("Could not find application: \(appName)")
+            //     return false
+            // }
+            //
+            // let configuration = NSWorkspace.OpenConfiguration()
+            // var launchSuccess = false
+            // let semaphore = DispatchSemaphore(value: 0)
+            //
+            // NSWorkspace.shared.openApplication(at: appURL, configuration: configuration) { app, error in
+            //     if let error = error {
+            //         print("Failed to launch application: \(appName) - \(error.localizedDescription)")
+            //         launchSuccess = false
+            //     } else {
+            //         launchSuccess = true
+            //     }
+            //     semaphore.signal()
+            // }
+            //
+            // semaphore.wait()
+            //
+            // if !launchSuccess {
+            //     return false
+            // }
+            //
+            // Thread.sleep(forTimeInterval: 0.5)
+            // targetApp = NSWorkspace.shared.runningApplications.first { $0.localizedName == appName }
         }
 
         guard let app = targetApp else {
@@ -74,20 +76,19 @@ class WindowManager {
         }
 
         app.activate(options: [.activateIgnoringOtherApps])
+        // Thread.sleep(forTimeInterval: 0.10)
 
-        Thread.sleep(forTimeInterval: 0.15)
-
-        if NSWorkspace.shared.frontmostApplication?.bundleIdentifier != app.bundleIdentifier {
-            let process = Process()
-            process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
-            process.arguments = ["-a", appName]
-
-            do {
-                try process.run()
-                process.waitUntilExit()
-                Thread.sleep(forTimeInterval: 0.15)
-            } catch {
-            }
+        // if NSWorkspace.shared.frontmostApplication?.bundleIdentifier != app.bundleIdentifier {
+        //     let process = Process()
+        //     process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+        //     process.arguments = ["-a", appName]
+        //
+        //     do {
+        //         try process.run()
+        //         process.waitUntilExit()
+        //         Thread.sleep(forTimeInterval: 0.15)
+        //     } catch {
+        //     }
 
             if NSWorkspace.shared.frontmostApplication?.bundleIdentifier != app.bundleIdentifier {
                 let script = """
@@ -107,7 +108,7 @@ class WindowManager {
                 } catch {
                 }
             }
-        }
+        // }
 
         return true
     }
@@ -199,17 +200,17 @@ class WindowManager {
         case .left:
             newFrame = CGRect(
                 x: screenFrame.origin.x + border,
-                y: screenFrame.origin.y + menuBarHeight,
+                y: screenFrame.origin.y + menuBarHeight + border / 2,
                 width: (screenFrame.width / 2) - (border * 1.5),
-                height: screenFrame.height - menuBarHeight - border
+                height: screenFrame.height - border
             )
 
         case .right:
             newFrame = CGRect(
-                x: screenFrame.origin.x + (screenFrame.width / 2) + (border / 2),
-                y: screenFrame.origin.y + menuBarHeight,
+                x: screenFrame.origin.x + (screenFrame.width / 2) + (border),
+                y: screenFrame.origin.y + menuBarHeight + border / 2, 
                 width: (screenFrame.width / 2) - (border * 1.5),
-                height: screenFrame.height - menuBarHeight - border
+                height: screenFrame.height - border
             )
 
         case .centered:
@@ -219,9 +220,9 @@ class WindowManager {
 
             newFrame = CGRect(
                 x: screenFrame.origin.x + leftGap,
-                y: screenFrame.origin.y + menuBarHeight,
+                y: screenFrame.origin.y + menuBarHeight ,
                 width: windowWidth,
-                height: screenFrame.height - menuBarHeight - border
+                height: screenFrame.height
             )
         }
 

@@ -27,9 +27,9 @@ struct Config: Codable {
 
     func getCenteredWidth(for binding: AppBinding) -> Int {
         if let width = binding.centeredWidth {
-            return min(max(width, 40), 90)
+            return min(max(width, 40), 100)
         }
-        return min(max(defaultCenteredWidth, 40), 90)
+        return min(max(defaultCenteredWidth, 40), 100)
     }
 
     static func load(from path: String = defaultConfigPath) -> Config? {
