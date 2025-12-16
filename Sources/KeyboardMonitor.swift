@@ -52,10 +52,15 @@ class KeyboardMonitor {
         self.runLoopSource = runLoopSource
 
         print("HyperTile is running...")
-        print("Hyper = Ctrl + Cmd + Shift + Option")
-        print("Left key: Hyper + \(config.left)")
-        print("Right key: Hyper + \(config.right)")
-        print("App bindings:")
+        print("Hyper = Ctrl + Cmd + Shift + Option\n")
+
+        if config.accessibilityMode {
+            print("Window Tiling:")
+            print("  Hyper + \(config.left) -> Toggle left/center")
+            print("  Hyper + \(config.right) -> Toggle right/center\n")
+        }
+
+        print("App Bindings:")
         for app in config.apps {
             print("  Hyper + \(app.bind) -> \(app.appName)")
         }
@@ -99,18 +104,20 @@ class KeyboardMonitor {
     private func handleKeyPress(_ char: String) -> Bool {
         let lowerChar = char.lowercased()
 
-        if lowerChar == config.left.lowercased() {
-            DispatchQueue.main.async {
-                self.windowManager.handleLeftKey()
+        if config.accessibilityMode {
+            if lowerChar == config.left.lowercased() {
+                DispatchQueue.main.async {
+                    self.windowManager.handleLeftKey()
+                }
+                return true
             }
-            return true
-        }
 
-        if lowerChar == config.right.lowercased() {
-            DispatchQueue.main.async {
-                self.windowManager.handleRightKey()
+            if lowerChar == config.right.lowercased() {
+                DispatchQueue.main.async {
+                    self.windowManager.handleRightKey()
+                }
+                return true
             }
-            return true
         }
 
         if let binding = config.findBinding(for: lowerChar) {

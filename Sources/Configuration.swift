@@ -21,6 +21,7 @@ struct Config: Codable {
     let left: String
     let right: String
     let defaultCenteredWidth: Int
+    let accessibilityMode: Bool
     let apps: [AppBinding]
 
     static let defaultConfigPath = NSHomeDirectory() + "/.config/hypertile.config.json"
@@ -74,19 +75,44 @@ struct Config: Codable {
 
     static func createDefault() -> Config {
         return Config(
-            left: "a",
-            right: "s",
+            left: "d",
+            right: "f",
             defaultCenteredWidth: 75,
+            accessibilityMode: true,
             apps: [
                 AppBinding(
-                    appName: "iTerm",
-                    bind: "t",
-                    mousePosition: nil,
+                    appName: "iTerm2",
+                    bind: "6",
+                    mousePosition: MousePosition(x: 50, y: 80),
+                    centeredWidth: nil
+                ),
+                AppBinding(
+                    appName: "neovide",
+                    bind: "7",
+                    mousePosition: MousePosition(x: 50, y: 80),
                     centeredWidth: nil
                 ),
                 AppBinding(
                     appName: "Google Chrome",
-                    bind: "c",
+                    bind: "q",
+                    mousePosition: MousePosition(x: 50, y: 50),
+                    centeredWidth: nil
+                ),
+                AppBinding(
+                    appName: "Safari",
+                    bind: "a",
+                    mousePosition: MousePosition(x: 50, y: 50),
+                    centeredWidth: nil
+                ),
+                AppBinding(
+                    appName: "Microsoft Teams",
+                    bind: "w",
+                    mousePosition: MousePosition(x: 50, y: 60),
+                    centeredWidth: nil
+                ),
+                AppBinding(
+                    appName: "Microsoft Outlook",
+                    bind: "e",
                     mousePosition: MousePosition(x: 50, y: 50),
                     centeredWidth: nil
                 )
