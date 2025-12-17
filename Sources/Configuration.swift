@@ -21,7 +21,6 @@ struct Config: Codable {
     let left: String
     let right: String
     let defaultCenteredWidth: Int
-    let accessibilityMode: Bool
     let apps: [AppBinding]
 
     static let defaultConfigPath = NSHomeDirectory() + "/.config/hypertile.config.json"
@@ -78,7 +77,6 @@ struct Config: Codable {
             left: "d",
             right: "f",
             defaultCenteredWidth: 75,
-            accessibilityMode: true,
             apps: [
                 AppBinding(
                     appName: "iTerm2",

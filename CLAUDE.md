@@ -44,14 +44,14 @@ The following are the 3 core functions of the application:
 - bring the application window associated with the pressed keybind into a focused state (like "open -a ..." in zsh)
 - if a mouse position is specified teleport the mouse to that relative position in the app window. If it's useful to keep the current app boundaries in memory make sure to store them in state prior to this step.
 
-### When the left key is pressed (disabled in lite mode):
+### When the left key is pressed:
 
 - toggle the application between the left side and centered
 - when on the left side the application window will occupy the left HALF of the screen with a 10 pixel boarder top, left and bottom
 - when the application is centered it will move to the center of the screen and occupy a horizontal with of 75% (unless other number is specified in config) of the screen. So, for example, if an application occupies "75" then from left to right you will have a 12.5% empty gap, 75% application width, and a final 12.5% empty gap. The Top of the window will be 10 pixels from the menu bar and the bottom will be 10 pixels from the bottom of the screen.
 - repeated presses of the left key will toggle the application between the left side and centered.
 
-### When the right key is pressed (disabled in lite mode):
+### When the right key is pressed:
 
 - toggle the application between the right side and and centered
 - when on the right side the application window will occupy the right horizontal HALF of the screen with a 10 pixel boarder: 10 top, 10 right, 10 bottom.
@@ -59,9 +59,3 @@ The following are the 3 core functions of the application:
 - repeated presses will toggle the application between right and center
 - if the application is on the left and the right key is pressed, move the application to the right side, and vice versa.
 - the application will only move to center if it is already on the side of the key stroke being pressed. For example, the app will only be centered if the user clicks the left button while the app is ON the left.
-
-## Release structure
-
-- There should be two versions of this application
-- First version enables all of the features
-- The second mode disables any feature that requires accessibility permissions. The primary function in this mode is to bring app window to active and move the mouse to it.

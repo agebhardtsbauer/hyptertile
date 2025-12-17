@@ -22,48 +22,6 @@ class WindowManager {
         if targetApp == nil {
             print("Application \(appName) is not running.")
             return false
-            // guard let appURL = findApplicationURL(named: appName) else {
-            //     let process = Process()
-            //     process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
-            //     process.arguments = ["-a", appName]
-            //
-            //     do {
-            //         try process.run()
-            //         process.waitUntilExit()
-            //
-            //         if process.terminationStatus == 0 {
-            //             Thread.sleep(forTimeInterval: 0.5)
-            //             return true
-            //         }
-            //     } catch {
-            //     }
-            //
-            //     print("Could not find application: \(appName)")
-            //     return false
-            // }
-            //
-            // let configuration = NSWorkspace.OpenConfiguration()
-            // var launchSuccess = false
-            // let semaphore = DispatchSemaphore(value: 0)
-            //
-            // NSWorkspace.shared.openApplication(at: appURL, configuration: configuration) { app, error in
-            //     if let error = error {
-            //         print("Failed to launch application: \(appName) - \(error.localizedDescription)")
-            //         launchSuccess = false
-            //     } else {
-            //         launchSuccess = true
-            //     }
-            //     semaphore.signal()
-            // }
-            //
-            // semaphore.wait()
-            //
-            // if !launchSuccess {
-            //     return false
-            // }
-            //
-            // Thread.sleep(forTimeInterval: 0.5)
-            // targetApp = NSWorkspace.shared.runningApplications.first { $0.localizedName == appName }
         }
 
         guard let app = targetApp else {

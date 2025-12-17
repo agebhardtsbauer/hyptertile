@@ -54,11 +54,9 @@ class KeyboardMonitor {
         print("HyperTile is running...")
         print("Hyper = Ctrl + Cmd + Shift + Option\n")
 
-        if config.accessibilityMode {
-            print("Window Tiling:")
-            print("  Hyper + \(config.left) -> Toggle left/center")
-            print("  Hyper + \(config.right) -> Toggle right/center\n")
-        }
+        print("Window Tiling:")
+        print("  Hyper + \(config.left) -> Toggle left/center")
+        print("  Hyper + \(config.right) -> Toggle right/center\n")
 
         print("App Bindings:")
         for app in config.apps {
@@ -104,20 +102,18 @@ class KeyboardMonitor {
     private func handleKeyPress(_ char: String) -> Bool {
         let lowerChar = char.lowercased()
 
-        if config.accessibilityMode {
-            if lowerChar == config.left.lowercased() {
-                DispatchQueue.main.async {
-                    self.windowManager.handleLeftKey()
-                }
-                return true
+        if lowerChar == config.left.lowercased() {
+            DispatchQueue.main.async {
+                self.windowManager.handleLeftKey()
             }
+            return true
+        }
 
-            if lowerChar == config.right.lowercased() {
-                DispatchQueue.main.async {
-                    self.windowManager.handleRightKey()
-                }
-                return true
+        if lowerChar == config.right.lowercased() {
+            DispatchQueue.main.async {
+                self.windowManager.handleRightKey()
             }
+            return true
         }
 
         if let binding = config.findBinding(for: lowerChar) {

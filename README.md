@@ -1,16 +1,13 @@
 # HyperTile
 
-A fast and opinionated window manager for macOS that runs in your terminal. HyperTile uses global keyboard shortcuts with the "Hyper" modifier key to quickly focus applications, move the mouse, and optionally tile windows.
+A fast and opinionated tiling window manager for macOS that runs in your terminal. HyperTile uses global keyboard shortcuts with the "Hyper" modifier key to quickly focus applications, position windows, and move the mouse.
 
 ## Features
 
 - **Global keyboard shortcuts** using Hyper key (Ctrl + Cmd + Shift + Option)
-- **Two modes:**
-  - **Full Mode**: App focus + mouse positioning + window tiling (requires Accessibility permissions)
-  - **Lite Mode**: App focus + mouse positioning only (no permissions required)
 - **Fast app switching** - bring any configured app to focus instantly
 - **Automatic mouse positioning** - teleport mouse to specific window locations
-- **Window tiling** (Full Mode only) - position windows left/right/center
+- **Window tiling** - position windows left/right/center with precise control
 - **JSON-based configuration** - easy to customize
 - **Lightweight** - runs silently in the background
 
@@ -38,7 +35,21 @@ cp .build/release/hypertile /usr/local/bin/
 
 ## Setup
 
-### 1. Configuration
+### 1. Grant Accessibility Permissions
+
+HyperTile requires Accessibility permissions to monitor keyboard events and control windows.
+
+1. Run HyperTile for the first time:
+   ```bash
+   hypertile
+   ```
+
+2. You'll be prompted to grant Accessibility permissions
+3. Go to **System Settings** > **Privacy & Security** > **Accessibility**
+4. Add Terminal (or your terminal app) to the list and enable it
+5. Restart HyperTile
+
+### 2. Configuration
 
 On first run, HyperTile will create a default configuration file at:
 ```
@@ -54,10 +65,9 @@ You can customize this file to add your own application bindings.
   "left": "d",
   "right": "f",
   "defaultCenteredWidth": 75,
-  "accessibilityMode": true,
   "apps": [
     {
-      "appName": "iTerm",
+      "appName": "iTerm2",
       "bind": "6",
       "mousePosition": {
         "x": 50,
@@ -81,16 +91,12 @@ You can customize this file to add your own application bindings.
 #### Configuration Fields
 
 - **left**: The key for left/center window toggle (default: "d")
-  - Full Mode only: Press Hyper + left to toggle between left half and centered
+  - Press Hyper + left to toggle between left half and centered
 
 - **right**: The key for right/center window toggle (default: "f")
-  - Full Mode only: Press Hyper + right to toggle between right half and centered
+  - Press Hyper + right to toggle between right half and centered
 
 - **defaultCenteredWidth**: Default width percentage when centered (40-100, default: 75)
-
-- **accessibilityMode**: Enable Full Mode features (default: true)
-  - `true` = Full Mode: App focus + mouse + window tiling (requires Accessibility permissions)
-  - `false` = Lite Mode: App focus + mouse only (no permissions required)
 
 - **apps**: Array of application bindings, each with:
   - **appName**: Exact name of the application (as shown in the menu bar)
@@ -99,50 +105,6 @@ You can customize this file to add your own application bindings.
     - `{ "x": 50, "y": 80 }` positions mouse at 50% width, 80% height of window
     - `null` or omitted means don't move the mouse
   - **centeredWidth** (optional): Override default centered width for this app (40-100)
-
-### 2. Choose Your Mode
-
-#### Full Mode (Default)
-
-Requires Accessibility permissions but enables all features:
-
-1. Run HyperTile:
-   ```bash
-   hypertile
-   ```
-
-2. Grant Accessibility permissions when prompted:
-   - Go to **System Settings** > **Privacy & Security** > **Accessibility**
-   - Add Terminal (or your terminal app) to the list and enable it
-
-3. Restart HyperTile
-
-**Full Mode Features:**
-- ✅ Focus apps with Hyper + key
-- ✅ Move mouse to configured positions
-- ✅ Tile windows left/right/center
-
-#### Lite Mode
-
-No permissions required, perfect for quick app switching:
-
-1. Edit `~/.config/hypertile.config.json`:
-   ```json
-   {
-     "accessibilityMode": false,
-     ...
-   }
-   ```
-
-2. Run HyperTile:
-   ```bash
-   hypertile
-   ```
-
-**Lite Mode Features:**
-- ✅ Focus apps with Hyper + key
-- ✅ Move mouse to configured positions
-- ❌ Window tiling disabled
 
 ## Usage
 
@@ -157,19 +119,19 @@ The "Hyper" modifier is defined as all four modifier keys pressed simultaneously
 
 #### Application Bindings (Hyper + letter/number)
 
-When you press an app binding (e.g., Hyper + 6 for iTerm):
+When you press an app binding (e.g., Hyper + 6 for iTerm2):
 1. **Brings the application into focus** (must already be running)
 2. **Moves the mouse** to the configured position (if specified)
 
 **Important:** HyperTile does NOT launch apps - the app must already be running. If the app is not running, you'll see a message in the terminal.
 
-#### Window Tiling (Full Mode Only)
+#### Window Tiling
 
-**Hyper + d** (left toggle):
+**Hyper + d** (left toggle, by default):
 - If window is on left → move to center
 - Otherwise → move to left half
 
-**Hyper + f** (right toggle):
+**Hyper + f** (right toggle, by default):
 - If window is on right → move to center
 - Otherwise → move to right half
 
@@ -188,21 +150,24 @@ HyperTile uses a two-tier activation approach for maximum reliability:
 
 This ensures apps are brought to focus reliably regardless of their implementation or current focus state.
 
-### Why Two Modes?
+### Accessibility Permissions
 
-- **Full Mode** requires Accessibility permissions because window manipulation uses the macOS Accessibility API
-- **Lite Mode** uses only standard APIs (NSWorkspace, AppleScript, CGWarpMouseCursorPosition) which don't require special permissions
-- Choose Lite Mode if you only need fast app switching and don't want to grant permissions
+HyperTile requires Accessibility permissions for:
+- **Global keyboard monitoring** - to listen for Hyper key combinations
+- **Window manipulation** - to position and resize windows
+- **Getting window information** - for state tracking and mouse positioning
+
+Without these permissions, HyperTile cannot function.
 
 ## Example Workflow
 
 With the default configuration:
 
-1. **Hyper + 6**: Focus iTerm (mouse moves to 50%, 80%)
+1. **Hyper + 6**: Focus iTerm2 (mouse moves to 50%, 80%)
 2. **Hyper + 7**: Focus neovide (mouse moves to 50%, 80%)
 3. **Hyper + q**: Focus Chrome (mouse moves to 50%, 50%)
-4. **Hyper + d** (Full Mode, while iTerm focused): Toggle iTerm between left and center
-5. **Hyper + f** (Full Mode, while Chrome focused): Toggle Chrome between right and center
+4. **Hyper + d** (while iTerm2 focused): Toggle iTerm2 between left and center
+5. **Hyper + f** (while Chrome focused): Toggle Chrome between right and center
 
 ## Running on Startup
 
@@ -254,19 +219,19 @@ HyperTile does not launch apps - it only focuses already-running apps. Make sure
 ### App doesn't come to focus
 
 - **Verify app name**: Must match exactly what's shown in the menu bar
-  - Some apps have different names (e.g., "Microsoft Teams" not "Teams")
+  - Some apps have different names (e.g., "iTerm2" not "iTerm")
   - Check menu bar while app is running to get exact name
-- **Try adding to config**: Some apps need both methods (NSWorkspace + AppleScript) to work reliably
 - **Check terminal output**: HyperTile prints useful debug info
+- The two-tier activation (NSWorkspace + AppleScript) handles most apps reliably
 
 ### Keyboard shortcuts not working
 
-- **Full Mode**: Ensure Accessibility permissions are granted
-- **Lite Mode**: Should work without permissions
-- Verify your key bindings don't conflict with system shortcuts
+- Ensure Accessibility permissions are granted
+- Verify your terminal app is in the Accessibility list
+- Check that your key bindings don't conflict with system shortcuts
 - Try restarting HyperTile
 
-### Window positioning issues (Full Mode)
+### Window positioning issues
 
 - Some apps may override window positioning
 - Try adjusting border sizes if windows appear cut off
@@ -274,8 +239,7 @@ HyperTile does not launch apps - it only focuses already-running apps. Make sure
 
 ### Mouse not moving
 
-- **Full Mode**: Mouse positioning requires Accessibility permissions
-- **Lite Mode**: Mouse positioning uses CGWarpMouseCursorPosition which doesn't require permissions
+- Verify Accessibility permissions are granted
 - Check that `mousePosition` is configured in your app binding
 - Verify coordinates are between 0-100
 
@@ -283,7 +247,7 @@ HyperTile does not launch apps - it only focuses already-running apps. Make sure
 
 The default config includes these apps (customize as needed):
 
-- **Hyper + 6** → iTerm
+- **Hyper + 6** → iTerm2
 - **Hyper + 7** → neovide
 - **Hyper + q** → Google Chrome
 - **Hyper + a** → Safari
@@ -292,7 +256,7 @@ The default config includes these apps (customize as needed):
 
 ## Advanced Configuration
 
-### Custom Border Sizes (Full Mode)
+### Custom Border Sizes
 
 To modify border sizes, edit `Sources/WindowManager.swift`:
 ```swift

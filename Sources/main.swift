@@ -9,30 +9,21 @@ func checkAccessibilityPermissions() -> Bool {
 print("HyperTile - Fast and Opinionated Tiling Window Manager")
 print("========================================================\n")
 
+if !checkAccessibilityPermissions() {
+    print("⚠️  Accessibility permissions required!")
+    print("Please grant accessibility permissions in System Settings.")
+    print("Go to: System Settings > Privacy & Security > Accessibility")
+    print("\nOnce granted, restart HyperTile.\n")
+    exit(1)
+}
+
 guard let config = Config.load() else {
     print("❌ Failed to load configuration")
     exit(1)
 }
 
-let mode = config.accessibilityMode ? "Full Mode" : "Lite Mode"
-print("✓ Running in: \(mode)")
-print("✓ Configuration loaded from: \(Config.defaultConfigPath)\n")
-
-if config.accessibilityMode {
-    if !checkAccessibilityPermissions() {
-        print("⚠️  Accessibility permissions required for Full Mode!")
-        print("Please grant accessibility permissions in System Settings.")
-        print("Go to: System Settings > Privacy & Security > Accessibility")
-        print("\nAlternatively, set \"accessibilityMode\": false in your config")
-        print("to run in Lite Mode (app focus + mouse positioning only).\n")
-        exit(1)
-    }
-    print("✓ Accessibility permissions granted")
-    print("✓ Window tiling enabled (Hyper+\(config.left) / Hyper+\(config.right))\n")
-} else {
-    print("ℹ️  Lite Mode: Window tiling disabled")
-    print("ℹ️  App focus and mouse positioning only\n")
-}
+print("✓ Configuration loaded from: \(Config.defaultConfigPath)")
+print("✓ Accessibility permissions granted\n")
 
 let appState = AppState()
 let windowManager = WindowManager(appState: appState, config: config)
