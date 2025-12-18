@@ -9,10 +9,47 @@ class WindowManager {
 
     private let border: CGFloat = 6
     private let menuBarHeight: CGFloat = 25
+    private let borderWindow: BorderWindow
+    private var focusObserver: Any?
 
     init(appState: AppState, config: Config) {
         self.appState = appState
         self.config = config
+        self.borderWindow = BorderWindow()
+
+        setupFocusMonitoring()
+    }
+
+    deinit {
+        if let observer = focusObserver {
+            NSWorkspace.shared.notificationCenter.removeObserver(observer)
+        }
+    }
+
+    private func setupFocusMonitoring() {
+        focusObserver = NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.didActivateApplicationNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.updateBorder()
+        }
+
+        // Initial border update
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.updateBorder()
+        }
+    }
+
+    func updateBorder() {
+        guard let window = getFrontmostWindow(),
+              let windowFrame = getWindowFrame(window) else {
+            borderWindow.hide()
+            return
+        }
+
+        borderWindow.updateFrame(for: windowFrame)
+        borderWindow.show()
     }
 
     func launchAndFocusApp(_ appName: String) -> Bool {
@@ -187,6 +224,11 @@ class WindowManager {
         setWindowFrame(window, frame: newFrame)
         appState.updatePosition(for: appName, position: position)
         appState.updateBounds(for: appName, bounds: newFrame)
+
+        // Update border after window positioning
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.updateBorder()
+        }
     }
 
     func moveMouseToPosition(_ mousePos: MousePosition, in appName: String) {
@@ -216,6 +258,9 @@ class WindowManager {
         if let mousePos = binding.mousePosition {
             moveMouseToPosition(mousePos, in: binding.appName)
         }
+
+        // Update border after focusing app
+        updateBorder()
     }
 
     func handleLeftKey() {
