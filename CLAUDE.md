@@ -8,15 +8,30 @@ This is a Swift application that runs in a terminal, named "HyperTile". It's int
 - "Hyper" is defined as "ctrl+cmd+shift+opt held simultaneously.
 - example: hyper+a or hyper+4 would be valid inputs
 - app window movements will always be on the primary screen, this app does not support secondary screen.
+- There will be no spacing gaps between windows and the edges of the screen nor between windows and other windows when in half/half position.
+- The focused app will have a 2px cyan border around it. When the focused app position changes the border will move with it.
+
+## Definitions and clarifications.
+
+- Full Screen is considered to be an app window that touches the left, right, bottom and top (touching menubar) - this is not "Apple" full screen.
+- If an app centered setting is 80 that means the gap between the window and the left side of the screen is 10% and same on the right.
+- If a mouse position is 50,50 that means the mouse is centered on the window
+- If a mouse position is 100,50 that means it's centered on the right edge of the window frame
+
+## State Management
+
+- Application state should store it's previous position AND it's previous half side position. Since Full Screen toggle will need to know previous and swap will need to know which was the last side occupied.
+- Application state should always know the centered coordinates of each app binding
+- Whatever else is useful to make the app faster
 
 ## Configuration Schema
 
 ### There will be a JSON configuration file stored in ~/.config/hypertile.config.json . The config file will have the following 4 things:
 
-- left: hyper+d
-- right: hyper+f
+- swap: hyper+7
+- full: hyper+g
 - defaultCenteredWidth: 75 (default value 75) (this can be overridden per app)
-- a list of application bindings with the following properties:
+- a list of App bindings with the following properties:
   {
   appName: "NAME_OF_APPLICATION" (example: "iTerm" or "Microsoft Teams" or "Google Chrome")
   bind: (alphanumeric char) -- a single alphanumeric character, the binding will be hyper+char
@@ -24,38 +39,43 @@ This is a Swift application that runs in a terminal, named "HyperTile". It's int
   centeredWidth?: (40-90) (default to empty) -- a percentage of how much of the horizontal space the application will occupy.
   }
 
-#### Default Conifg:
+### Default Conifg:
 
 the following are default applicaiton bindings to include in the default config. These are specified as CSV for shorthand (appName, bind, mouseX, mouseY)
 
-- iTerm, 6, 50, 80
-- neovide, 7, 50, 80
-- Google Chrome, q, 50, 50
-- Safari, a, 50, 50
-- Microsoft Teams, w, 50, 60
-- Microsoft Outlook, e, 50, 50
+- iTerm, d, 90, 50
+- neovide, f, 90, 50
+- Google Chrome, e, 50, 50
+- Safari, r, 50, 50
+- Microsoft Teams, c, 60, 50
+- Microsoft Outlook, v, 50, 50
 
 ## Application Behavior
 
 The following are the 3 core functions of the application:
 
-### When an APP binding is pressed, in order of priority:
+### When an App binding is pressed:
 
-- bring the application window associated with the pressed keybind into a focused state (like "open -a ..." in zsh)
-- if a mouse position is specified teleport the mouse to that relative position in the app window. If it's useful to keep the current app boundaries in memory make sure to store them in state prior to this step.
+- If the application is not open, do not open it, just print a warning, skip further instructions.
+- The app that is currently active, if centered or full screen, return that application to it's most recently occurpied half screen location (reference the "swap" button instructions for additional clarity on this instruction)
+- Bring the App that is associated with the App binding to an active and focused state, move the mouse cursor to the position in the window specified by the config.
+- If the App who's app binding was pressed is already active then move the app to it's "centered" position
+- If the App is already centered then return it to it's most recently occupied half screen position (left or right)
+- Whenever the application changes position always move the mouse cursor to the X,Y position within it's new window frame.
+- Whenever the application changes position move the cyan border with it.
 
-### When the left key is pressed:
+### When the Swap binding is pressed:
 
-- toggle the application between the left side and centered
-- when on the left side the application window will occupy the left HALF of the screen with a 10 pixel boarder top, left and bottom
-- when the application is centered it will move to the center of the screen and occupy a horizontal with of 75% (unless other number is specified in config) of the screen. So, for example, if an application occupies "75" then from left to right you will have a 12.5% empty gap, 75% application width, and a final 12.5% empty gap. The Top of the window will be 10 pixels from the menu bar and the bottom will be 10 pixels from the bottom of the screen.
-- repeated presses of the left key will toggle the application between the left side and centered.
+- If the application is occupying the left half of the screen then move it to the right half of the screen. The right half is now that app's default side.
+- If the application is occupying the right half of the screen then move it to the left half of the screen. The left half is now that app's default side.
+- If the application is currently centered or full return it to half screen on the side opposite of where it last occupied a half screen position
+- Whenever an app window moves to a half screen position write that side, left or right, to state for that application as it's last know half side position.
+- Whenever the application changes position always move the mouse cursor to the X,Y position within it's new window frame.
+- Whenever the application changes position move the cyan border with it.
 
-### When the right key is pressed:
+### When the Full binding is pressed:
 
-- toggle the application between the right side and and centered
-- when on the right side the application window will occupy the right horizontal HALF of the screen with a 10 pixel boarder: 10 top, 10 right, 10 bottom.
-- if the app is on the right then the next click of the right key will center it
-- repeated presses will toggle the application between right and center
-- if the application is on the left and the right key is pressed, move the application to the right side, and vice versa.
-- the application will only move to center if it is already on the side of the key stroke being pressed. For example, the app will only be centered if the user clicks the left button while the app is ON the left.
+- If the active application is already full screen return it to it's previously occupied position, centered, left or right
+- Bring the active application window to full screen
+- Whenever the application changes position always move the mouse cursor to the X,Y position within it's new window frame.
+- Whenever the application changes position move the cyan border with it.

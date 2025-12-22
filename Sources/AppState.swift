@@ -5,12 +5,16 @@ enum WindowPosition {
     case left
     case right
     case centered
+    case fullscreen
 }
 
 class AppWindowState {
     var position: WindowPosition?
+    var previousPosition: WindowPosition?
+    var lastHalfSide: WindowPosition?
     var bounds: CGRect?
-    var isHidden: Bool = false
+    var centeredBounds: CGRect?
+    var cachedMousePosition: CGPoint?
 
     init() {}
 }
@@ -29,7 +33,13 @@ class AppState {
 
     func updatePosition(for appName: String, position: WindowPosition) {
         let state = getState(for: appName)
+        state.previousPosition = state.position
         state.position = position
+
+        // Track last half side position
+        if position == .left || position == .right {
+            state.lastHalfSide = position
+        }
     }
 
     func updateBounds(for appName: String, bounds: CGRect) {
@@ -37,16 +47,33 @@ class AppState {
         state.bounds = bounds
     }
 
-    func setHidden(for appName: String, hidden: Bool) {
+    func updateCenteredBounds(for appName: String, bounds: CGRect) {
         let state = getState(for: appName)
-        state.isHidden = hidden
-    }
-
-    func isHidden(for appName: String) -> Bool {
-        return getState(for: appName).isHidden
+        state.centeredBounds = bounds
     }
 
     func getPosition(for appName: String) -> WindowPosition? {
         return getState(for: appName).position
+    }
+
+    func getPreviousPosition(for appName: String) -> WindowPosition? {
+        return getState(for: appName).previousPosition
+    }
+
+    func getLastHalfSide(for appName: String) -> WindowPosition? {
+        return getState(for: appName).lastHalfSide
+    }
+
+    func getCenteredBounds(for appName: String) -> CGRect? {
+        return getState(for: appName).centeredBounds
+    }
+
+    func updateCachedMousePosition(for appName: String, position: CGPoint) {
+        let state = getState(for: appName)
+        state.cachedMousePosition = position
+    }
+
+    func getCachedMousePosition(for appName: String) -> CGPoint? {
+        return getState(for: appName).cachedMousePosition
     }
 }

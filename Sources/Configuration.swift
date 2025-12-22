@@ -18,8 +18,8 @@ struct AppBinding: Codable {
 }
 
 struct Config: Codable {
-    let left: String
-    let right: String
+    let swap: String
+    let full: String
     let defaultCenteredWidth: Int
     let apps: [AppBinding]
 
@@ -74,43 +74,43 @@ struct Config: Codable {
 
     static func createDefault() -> Config {
         return Config(
-            left: "d",
-            right: "f",
+            swap: "7",
+            full: "g",
             defaultCenteredWidth: 75,
             apps: [
                 AppBinding(
                     appName: "iTerm2",
-                    bind: "6",
-                    mousePosition: MousePosition(x: 50, y: 80),
+                    bind: "d",
+                    mousePosition: MousePosition(x: 90, y: 50),
                     centeredWidth: nil
                 ),
                 AppBinding(
                     appName: "neovide",
-                    bind: "7",
-                    mousePosition: MousePosition(x: 50, y: 80),
+                    bind: "f",
+                    mousePosition: MousePosition(x: 90, y: 50),
                     centeredWidth: nil
                 ),
                 AppBinding(
                     appName: "Google Chrome",
-                    bind: "q",
+                    bind: "e",
                     mousePosition: MousePosition(x: 50, y: 50),
                     centeredWidth: nil
                 ),
                 AppBinding(
                     appName: "Safari",
-                    bind: "a",
+                    bind: "r",
                     mousePosition: MousePosition(x: 50, y: 50),
                     centeredWidth: nil
                 ),
                 AppBinding(
                     appName: "Microsoft Teams",
-                    bind: "w",
-                    mousePosition: MousePosition(x: 50, y: 60),
+                    bind: "c",
+                    mousePosition: MousePosition(x: 60, y: 50),
                     centeredWidth: nil
                 ),
                 AppBinding(
                     appName: "Microsoft Outlook",
-                    bind: "e",
+                    bind: "v",
                     mousePosition: MousePosition(x: 50, y: 50),
                     centeredWidth: nil
                 )

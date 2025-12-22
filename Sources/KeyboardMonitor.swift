@@ -55,8 +55,8 @@ class KeyboardMonitor {
         print("Hyper = Ctrl + Cmd + Shift + Option\n")
 
         print("Window Tiling:")
-        print("  Hyper + \(config.left) -> Toggle left/center")
-        print("  Hyper + \(config.right) -> Toggle right/center\n")
+        print("  Hyper + \(config.swap) -> Swap left/right")
+        print("  Hyper + \(config.full) -> Toggle fullscreen\n")
 
         print("App Bindings:")
         for app in config.apps {
@@ -102,16 +102,16 @@ class KeyboardMonitor {
     private func handleKeyPress(_ char: String) -> Bool {
         let lowerChar = char.lowercased()
 
-        if lowerChar == config.left.lowercased() {
+        if lowerChar == config.swap.lowercased() {
             DispatchQueue.main.async {
-                self.windowManager.handleLeftKey()
+                self.windowManager.handleSwapKey()
             }
             return true
         }
 
-        if lowerChar == config.right.lowercased() {
+        if lowerChar == config.full.lowercased() {
             DispatchQueue.main.async {
-                self.windowManager.handleRightKey()
+                self.windowManager.handleFullscreenKey()
             }
             return true
         }
