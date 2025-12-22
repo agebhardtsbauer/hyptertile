@@ -1,27 +1,26 @@
 {
-  "accessibilityMode": true,
   "apps": [
     {
       "appName": "iTerm2",
-      "bind": "6",
+      "bind": "d",
       "centeredWidth": null,
       "mousePosition": {
-        "x": 50,
-        "y": 80
+        "x": 90,
+        "y": 50
       }
     },
     {
       "appName": "neovide",
-      "bind": "7",
-      "centeredWidth": null,
+      "bind": "f",
+      "centeredWidth": 80,
       "mousePosition": {
-        "x": 50,
-        "y": 80
+        "x": 90,
+        "y": 50
       }
     },
     {
       "appName": "Google Chrome",
-      "bind": "q",
+      "bind": "e",
       "centeredWidth": null,
       "mousePosition": {
         "x": 50,
@@ -30,7 +29,7 @@
     },
     {
       "appName": "Safari",
-      "bind": "a",
+      "bind": "r",
       "centeredWidth": null,
       "mousePosition": {
         "x": 50,
@@ -39,16 +38,16 @@
     },
     {
       "appName": "Microsoft Teams",
-      "bind": "w",
+      "bind": "c",
       "centeredWidth": null,
       "mousePosition": {
-        "x": 50,
-        "y": 60
+        "x": 60,
+        "y": 50
       }
     },
     {
       "appName": "Microsoft Outlook",
-      "bind": "e",
+      "bind": "v",
       "centeredWidth": null,
       "mousePosition": {
         "x": 50,
@@ -57,6 +56,6 @@
     }
   ],
   "defaultCenteredWidth": 75,
-  "left": "d",
-  "right": "f"
+  "full": "g",
+  "swap": "7"
 }
