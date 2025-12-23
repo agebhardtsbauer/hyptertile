@@ -31,8 +31,18 @@ class BorderWindow: NSWindow {
     }
 
     func updateFrame(for windowFrame: CGRect) {
+        // Convert from Accessibility API coordinates (top-left origin, Y increases down)
+        // to NSWindow coordinates (bottom-left origin, Y increases up)
+        guard let screen = NSScreen.main else { return }
+
+        let screenHeight = screen.frame.height
+        let convertedY = screenHeight - windowFrame.origin.y - windowFrame.height
+
+        var convertedFrame = windowFrame
+        convertedFrame.origin.y = convertedY
+
         let inset = -borderWidth / 2
-        let borderFrame = windowFrame.insetBy(dx: inset, dy: inset)
+        let borderFrame = convertedFrame.insetBy(dx: inset, dy: inset)
         self.setFrame(borderFrame, display: true, animate: false)
     }
 
